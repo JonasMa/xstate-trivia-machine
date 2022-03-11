@@ -2,7 +2,13 @@ import React from 'react'
 import { useMachine } from '@xstate/react'
 import { GlobalStyle } from './components'
 import { machine } from './machine'
-import { Quiz as QuizScreen, Results as ResultsScreen, Welcome as WelcomeScreen, } from './screens'
+import {
+  Failure as FailureScreen,
+  Loading as LoadingScreen,
+  Quiz as QuizScreen,
+  Results as ResultsScreen,
+  Welcome as WelcomeScreen
+} from './screens'
 import { AppWrapper, Main } from './screens/ScreenUtils'
 
 function App() {
@@ -30,6 +36,15 @@ function App() {
           questions={state.context.questions}
           totalCorrectAnswers={state.context.totalCorrectAnswers}
           totalQuestions={state.context.questions.length}
+        />
+      )
+    } else if (state.matches('loading')) {
+      return <LoadingScreen/>
+    } else if (state.matches('failure')) {
+      return (
+        <FailureScreen
+          retry={() => send('RETRY')}
+          startOver={() => send('START_OVER')}
         />
       )
     }

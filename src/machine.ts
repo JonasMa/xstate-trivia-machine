@@ -14,12 +14,26 @@ export const machine = createMachine<AppMachineContext, AppMachineEvent, Machine
       currentQuestion: 0,
       currentQuestionDisplay: 1,
       totalCorrectAnswers: 0,
-      questions
     },
     states: {
       welcome: {
         on: {
-          START_QUIZ: 'quiz',
+          START_QUIZ: 'loading',
+        },
+      },
+      loading: {
+        entry: assign({
+          questions
+        }),
+        always: 'quiz',
+      },
+      failure: {
+        after: {
+          5000: 'loading',
+        },
+        on: {
+          RETRY: 'loading',
+          START_OVER: 'welcome',
         },
       },
       quiz: {
