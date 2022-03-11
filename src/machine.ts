@@ -1,8 +1,9 @@
-import { assign, createMachine } from 'xstate'
+import { assign, createMachine, DoneInvokeEvent } from 'xstate'
 import { questions } from "./utils/quizData";
 import { options } from "./options";
-import { AppMachineContext, AppMachineEvent, MachineTypeState } from "./types";
+import { AppMachineContext, AppMachineEvent, MachineTypeState, Question } from "./types";
 import { inspect } from "@xstate/inspect";
+import { fetchAndNormalizeQuizData } from "./utils";
 
 inspect({ iframe: false /* open in new window*/ });
 
@@ -22,10 +23,19 @@ export const machine = createMachine<AppMachineContext, AppMachineEvent, Machine
         },
       },
       loading: {
-        entry: assign({
-          questions
-        }),
-        always: 'quiz',
+        invoke: {
+          id: 'getQuizData',
+          src: () => fetchAndNormalizeQuizData(),
+          onDone: {
+            target: 'quiz',
+            actions: assign({
+              questions: (_, event: DoneInvokeEvent<Question[]>) => event.data,
+            }),
+          },
+          onError: {
+            target: 'failure',
+          },
+        },
       },
       failure: {
         after: {
