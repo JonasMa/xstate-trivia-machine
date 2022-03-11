@@ -1,4 +1,4 @@
-import { Question } from "../boilerplate/types";
+import { Question } from "../types";
 
 export const questions: Question[] = [{
   category: "Employer Branding",

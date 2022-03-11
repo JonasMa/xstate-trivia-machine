@@ -1,8 +1,9 @@
 import { assign, createMachine } from 'xstate'
 import { questions } from "./utils/quizData";
 import { options } from "./options";
+import { AppMachineContext, AppMachineEvent, MachineTypeState } from "./types";
 
-export const machine = createMachine(
+export const machine = createMachine<AppMachineContext, AppMachineEvent, MachineTypeState>(
   {
     id: 'Machine',
     initial: 'welcome',

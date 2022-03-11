@@ -1,7 +1,7 @@
 import React from 'react'
 import tw from 'tailwind.macro'
 import { Actions, Button, Container, H1, P } from '../components'
-import { Question } from '../boilerplate/types'
+import { Question } from '../types'
 
 const QuestionText = tw(P)`w-full md:w-4/5 mb-2 text-center`
 const QuestionsCount = tw(P)`text-sm mt-2`

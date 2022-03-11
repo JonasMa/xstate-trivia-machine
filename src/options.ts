@@ -1,5 +1,5 @@
 import { assign } from "xstate";
-import { AnswerableMachineEvent, AppMachineContext, AppMachineEvent } from "./boilerplate/types";
+import { AppMachineContext, AppMachineEvent } from "./types";
 
 export const options = {
   actions: {
