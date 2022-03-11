@@ -1,8 +1,7 @@
 import React from 'react'
 import tw from 'tailwind.macro'
-import {State} from 'xstate'
-import {Button, Container, CorrectIcon, H1, WrongIcon} from '../components'
-import {AppMachineContext, AppMachineEvent, Question} from '../types'
+import { Button, Container, CorrectIcon, H1, WrongIcon } from '../components'
+import { Question } from '../boilerplate/types'
 
 const QuestionResults = tw.ul`w-3/4 my-4`
 const Icon = tw.span`mr-4`

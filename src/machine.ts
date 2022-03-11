@@ -1,15 +1,8 @@
-import { assign, createMachine, DoneInvokeEvent, send } from 'xstate'
-import {
-  AnswerableMachineEvent,
-  AppMachineContext,
-  AppMachineEvent,
-  AppMachineQuizContext,
-  MachineTypeState,
-  Question
-} from './types'
-import { fetchAndNormalizeQuizData } from './utils'
+import { assign, createMachine } from 'xstate'
+import { questions } from "./utils/quizData";
+import { options } from "./options";
 
-export const machine = createMachine<AppMachineContext, AppMachineEvent, MachineTypeState>(
+export const machine = createMachine(
   {
     id: 'Machine',
     initial: 'welcome',
@@ -17,35 +10,12 @@ export const machine = createMachine<AppMachineContext, AppMachineEvent, Machine
       currentQuestion: 0,
       currentQuestionDisplay: 1,
       totalCorrectAnswers: 0,
+      questions
     },
     states: {
       welcome: {
         on: {
-          START_QUIZ: 'loading',
-        },
-      },
-      loading: {
-        invoke: {
-          id: 'getQuizData',
-          src: () => fetchAndNormalizeQuizData(),
-          onDone: {
-            target: 'quiz',
-            actions: assign({
-              questions: (_, event: DoneInvokeEvent<Question[]>) => event.data,
-            }),
-          },
-          onError: {
-            target: 'failure',
-          },
-        },
-      },
-      failure: {
-        after: {
-          5000: 'loading',
-        },
-        on: {
-          RETRY: 'loading',
-          START_OVER: 'welcome',
+          START_QUIZ: 'quiz',
         },
       },
       quiz: {
@@ -66,47 +36,13 @@ export const machine = createMachine<AppMachineContext, AppMachineEvent, Machine
         on: {
           PLAY_AGAIN: 'welcome',
         },
-        exit: 'resetGame',
+        exit: assign({
+          currentQuestion: 0,
+          currentQuestionDisplay: 1,
+          totalCorrectAnswers: 0,
+        }),
       },
     },
   },
-  {
-    actions: {
-      resetGame: assign({
-        currentQuestion: 0,
-        currentQuestionDisplay: 1,
-        totalCorrectAnswers: 0,
-        // questions: undefined,
-      }),
-      updateAnswer: assign((ctx, event) => {
-        const { answer } = event as AnswerableMachineEvent;
-        return ({
-          questions: [
-            ...ctx.questions!.slice(0, ctx.currentQuestion),
-            {
-              ...ctx.questions![ctx.currentQuestion],
-              userAnswer: answer,
-              correct:
-                ctx.questions![ctx.currentQuestion].correctAnswer === answer,
-            },
-            ...ctx.questions!.slice(ctx.currentQuestion + 1),
-          ],
-          totalCorrectAnswers:
-            ctx.questions![ctx.currentQuestion].correctAnswer === answer
-              ? (ctx.totalCorrectAnswers += 1)
-              : ctx.totalCorrectAnswers,
-          currentQuestion: ctx.currentQuestion += 1,
-          currentQuestionDisplay: ctx.currentQuestionDisplay += 1,
-        });
-      }),
-    },
-    guards: {
-      allQuestionsAnswered: (ctx) =>
-        (
-          ctx.questions!.every(
-            (question) => question.correct !== undefined,
-          )
-        ),
-    },
-  },
+  options
 )

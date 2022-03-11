@@ -32,14 +32,14 @@ export interface MachineQuizState {
   context: AppMachineQuizContext;
 }
 
-export type AppMachineEvent = DefaultMachineEvent | AnswerableMachineEvent;
+export type AppMachineEvent = DefaultMachineEvent;
 
 export interface DefaultMachineEvent {
-  type: 'START_QUIZ' | 'RETRY' | 'START_OVER' | 'PLAY_AGAIN';
+  type: 'START_QUIZ' | 'RETRY' | 'START_OVER' | 'PLAY_AGAIN' | 'ANSWER_TRUE'| 'ANSWER_FALSE';
 }
 
 export interface AnswerableMachineEvent {
-  type: 'ANSWER_TRUE' | 'ANSWER_FALSE';
+  type: 'ANSWER';
   answer: boolean;
 }
 
