@@ -6,7 +6,7 @@ import { Quiz as QuizScreen, Results as ResultsScreen, Welcome as WelcomeScreen,
 import { AppWrapper, Main } from './screens/ScreenUtils'
 
 function App() {
-  const [state, send] = useMachine(machine)
+  const [state, send] = useMachine(machine, { devTools: true })
 
   const renderScreen = () => {
     if (state.matches('welcome')) {

@@ -2,6 +2,9 @@ import { assign, createMachine } from 'xstate'
 import { questions } from "./utils/quizData";
 import { options } from "./options";
 import { AppMachineContext, AppMachineEvent, MachineTypeState } from "./types";
+import { inspect } from "@xstate/inspect";
+
+inspect({ iframe: false /* open in new window*/ });
 
 export const machine = createMachine<AppMachineContext, AppMachineEvent, MachineTypeState>(
   {
@@ -41,6 +44,7 @@ export const machine = createMachine<AppMachineContext, AppMachineEvent, Machine
           currentQuestion: 0,
           currentQuestionDisplay: 1,
           totalCorrectAnswers: 0,
+          questions
         }),
       },
     },

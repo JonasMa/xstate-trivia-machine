@@ -44,6 +44,7 @@
     "@types/styled-components": "5.1.24",
     "@xstate/cli": "0.1.1",
     "@xstate/graph": "1.4.1",
+    "@xstate/inspect": "0.6.4",
     "@xstate/test": "0.5.1",
     "commitizen": "4.2.4",
     "cypress": "9.5.1",
