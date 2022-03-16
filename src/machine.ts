@@ -1,15 +1,33 @@
 import { assign, createMachine } from 'xstate'
 import { questions } from "./utils/quizData";
+import {Question} from './boilerplate/types';
 
-const INITIAL_CONTEXT = {
+export interface QuizContext {
+  currentQuestion: number;
+  currentQuestionDisplay: number;
+  questions: Question[];
+  totalCorrectAnswers: number;
+}
+
+export type QuizEvents =
+  | { type: 'START_QUIZ' }
+  | { type: 'ANSWER_FALSE' }
+  | { type: 'ANSWER_TRUE' }
+  | { type: 'PLAY_AGAIN' };
+
+const INITIAL_CONTEXT: QuizContext = {
   currentQuestion: 0,
   currentQuestionDisplay: 1,
   totalCorrectAnswers: 0,
   questions,
 };
-
 export const machine = createMachine(
   {
+    schema: {
+      context: {} as QuizContext,
+      events: {} as QuizEvents,
+    },
+    tsTypes: {} as import("./machine.typegen").Typegen0,
     id: "QuizMachine",
     initial: "welcome",
     context: INITIAL_CONTEXT,
@@ -50,7 +68,7 @@ export const machine = createMachine(
   {
     actions: {
       updateAnswer: assign((ctx, {type}) => {
-        const answer = type === 'ANSWER_TRUE';
+        const answer = type === 'ANSWER_FALSE';
         return {
           questions: [
             ...ctx.questions!.slice(0, ctx.currentQuestion),
@@ -73,7 +91,7 @@ export const machine = createMachine(
       resetQuiz: assign(INITIAL_CONTEXT),
     },
     guards: {
-      allQuestionsAnswered: (ctx) => ctx.questions.every(question => question.correct !== undefined),
+      allQuestionsAnswered: (ctx) => ctx.questions!.every(question => question.correct !== undefined),
     }
   }
 )
